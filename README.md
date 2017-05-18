@@ -2,7 +2,7 @@
 
 Scalable system for detecting code reuse Among android applications
 
-## Functions added
+### Functions added
 
 ```
 Processing::djb2
