@@ -1,0 +1,78 @@
+Evaluation Strategy:
+
+1)	APK – no of opcodes and size of each APK (Frequency distribution)
+
+2)	Manually introduced malware : Trojanizing Legitimate Apps with Malicious Payloads
+Repackaging a legitimate Android app for malicious purpose typically involves modifications in
+ 1) the AndroidManifest.xml and 
+ 2) the app code. 
+There are two levels of app code where malicious code can be injected: at the java source code level or at the smali code level.
+Since the de compilation of an app to its java source project is more likely to generate errors and is not always possible, in this
+evaluation we choose to place the malicious code at the smali level. 
+
+-	One Sample malware is packaged into an APK
+-	In our dataset of 100 APKs :
+80 apks will be without the walmare
+19 apks will be repackaged with the malware
+1 apk contains the sample malware code 
+
+Run Juxtapp and evaluate performance, if Juxtapp can correctly identify the 19 apps with malware. 
+
+[Steps to introduce malware specfied in a different document]
+
+3) A randomly selected APK from the dataset will be repackaged under different APK names. where the opcodes will be the same. 
+But we will we manually change the publisher identifiers in the AndroidManifest.xml
+-	In our dataset of 100 APKs :
+5 APKS will have the same opcodes, repackaged under a different name
+
+Run Juxtapp and evaluate performance, if Juxtapp can correctly identify the 5 apps with the same opcode.
+
+Related work Evaluation techniques:
+DroidMoss Section 3.1
+"Usurping Existing In-App Advertisements In the second category, we also observe repackaged apps where existing ad SDKs
+still remain, but the corresponding publisher identifiers have been replaced likely with the repackagers’ identifiers. Note that each
+developer can sign up various ad networks to get his own app publisher identifier. The publisher identifier is assigned and used by
+an ad network to correctly distinguish user clicks or ad traffics and then return the resulting ad revenues. For example, Admob, one of
+the most popular ad networks in Android, uses two identifiers ADMOB_PUBLISHER_ID and ADMOB_INTERSTITIAL_PUBLISHER
+_ID, whose values are assigned by Admob to the app developers during their enrollment. By repackaging apps with their own
+publisher identifiers, repackagers can collect ad revenues from ad networks, resulting in a financial loss for the original app
+developers.
+In our experiments, we found that one popular repackaged target is the Angry Birds app (com.rovio.angrybirds) [40]. The vendor
+of this app (i.e., Rovio) does not charge for the download and installation. Instead it embeds certain ad SDKs (i.e., Admob)
+into this app to collect ad revenues. One repackaged Angry Birds DroidMOSS identified in a US marketplace did not modify any
+code in the original app. Instead, the only modification is on the Admob-specific identifiers."
+
+
+4) Manual verification of 3 APKS as done in DroidMoss, we select the one with the highest score.
+Related work Evaluation techniques:
+DroidMoss Section 3.1
+"To perform a concrete study on the repackaged apps and measure the effectiveness of our approach, we randomly choose 200 samples
+from each third-party marketplace and detect whether they are repackaged from some official Android Market apps. Specifically,
+for each chosen app, we measure its similarity score with each of these 68, 817 ones inside the official Android Market. Among the
+calculated 68, 817 similarity scores, we choose the highest one for manual investigation. Among the total 1, 200 app pairs, we apply
+the threshold 70 to infer whether an app is repackaged or not"
+
+
+Other Related Work:
+1) Plagiarizing Smartphone Applications: Attack
+Strategies and Defense Techniques
+
+Section:5
+ We manually verified the reverse-engineered code of both applications to confirm that the malware was indeed mimicking the
+functionality of the legitimate application. We also found that this malicious instance of HongTouTou not only
+adds new methods to the original version, but also changes some existing methods in the original version, leading to the slight
+mismatch.
+2 We thank Tim Strazzere of Lookout Security for sharing the malware samples with us. To show that our detection does not wrongly
+accuse applications of plagiarism, we removed the legitimate versions of the malware samples from our Pseudo Market and re-ran the
+AST-Coverage detection. As seen in Table 2, it correctly reported a low coverage of the malware samples with the other applications.
+
+
+
+
+
+
+
+
+
+
+
