@@ -1,4 +1,5 @@
 How to run ?
+g++ agg.cpp -std=c++11 -o a
 ./a ex1.txt 1 c > output.txt
 
 ex1.txt: Input file
