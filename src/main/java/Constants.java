@@ -2,6 +2,7 @@ package main.java;
 
 /**
  * Created by mitshubh on 5/17/17.
+ * @edited : swati.arora
  */
 
 // List of constants uses
@@ -20,4 +21,15 @@ public final class Constants {
     public static final String OUTPUT_FORMAT = ".out";
     public static final String BB_FOLDER = "BBFile/";
     public static final String ORIGINAL = "original/";
+}
+
+final class AgglomerateConstants{
+    public static final int NOT_USED = 0;       /* node is currently not used */
+    public static final int LEAF_NODE = 1;      /* node contains a leaf node */
+    public static final int A_MERGER = 2;       /* node contains a merged pair of root clusters */
+    public static final int MAX_LABEL_LEN = 16;
+    public static final char AVERAGE_LINKAGE = 'a';     /* choose average distance */
+    public static final char CENTROID_LINKAGE = 't'     /* choose distance between cluster centroids */
+    public static final char COMPLETE_LINKAGE = 'c'     /* choose maximum distance */
+    public static final char SINGLE_LINKAGE = 's'       /* choose minimum distance */
 }
