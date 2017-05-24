@@ -5,5 +5,5 @@ class ClusterT{
     int numOfClusters; /* current number of root clusters */
     int numOfNodes; /* number of leaf and merged clusters */
     ClusterNodeT[] nodes; /* leaf and merged clusters */
-    float[][] distances; /* distance between leaves */
+    double[][] distances; /* distance between leaves */
 }

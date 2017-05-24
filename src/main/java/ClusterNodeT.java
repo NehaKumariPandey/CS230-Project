@@ -2,9 +2,9 @@ package main.java;
 
 import java.util.*;
 
-class ClusterNodeT{
+public class ClusterNodeT{
     int type;           /* type of the cluster node */
-    int isRoot;         /* true if cluster hasn't merged with another */
+    boolean isRoot;         /* true if cluster hasn't merged with another */
     int height;         /* height of node from the bottom */
     BitSet centroid;    /* centroid of this cluster */
     String label;        /* label of a leaf node */
