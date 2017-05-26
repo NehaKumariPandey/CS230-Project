@@ -1,4 +1,4 @@
-import java.util.*;
+package main.java;
 
 class Distance{
     double bestDistance;

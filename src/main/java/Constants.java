@@ -21,6 +21,8 @@ public final class Constants {
     public static final String OUTPUT_FORMAT = ".out";
     public static final String BB_FOLDER = "BBFile/";
     public static final String ORIGINAL = "original/";
+    public static final String FV_FOLDER = "FVFile/";     /* Folder to store serialized information of feature vectors */
+    public static final String BIT_VECTOR_FILE = "bitVectors";
 }
 
 final class AgglomerateConstants{

@@ -1,6 +1,7 @@
 package main.java;
 
-import java.util.*;
+import main.java.NeighbourT;
+import java.util.BitSet;
 
 public class ClusterNodeT{
     int type;           /* type of the cluster node */

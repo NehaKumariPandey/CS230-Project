@@ -1,4 +1,5 @@
 package main.java;
+import main.java.ClusterNodeT;
 
 class ClusterT{
     int numOfItems; /* number of items that was clustered */

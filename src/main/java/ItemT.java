@@ -1,5 +1,5 @@
 package main.java;
-import java.util.*;
+import java.util.BitSet;
 
 class ItemT{
     BitSet coord;

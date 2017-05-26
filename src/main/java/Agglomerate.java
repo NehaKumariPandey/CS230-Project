@@ -1,16 +1,21 @@
 package main.java;
 
-import java.util.*;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import java.util.Map;
 
 public class Agglomerate{
-    private String linkageString;
+    private static String linkageString;
 
-    public double euclideanDistance(BitSet a, BitSet b){
+    public static double euclideanDistance(BitSet a, BitSet b){
         BitSet x = (BitSet)a.clone();
         BitSet y = (BitSet)a.clone();
 
-        x.xor(b); // Result placed in x
+        x.and(b); // Result placed in x
         y.or(b); // Result placed in y
 
         if(y.cardinality() == 0)
@@ -22,16 +27,19 @@ public class Agglomerate{
         return score;
     }
 
-    public void fillEuclideanDistances(double[][] matrix, int numOfItems, ItemT[] items) {
+    public static void fillEuclideanDistances(double[][] matrix, int numOfItems, ItemT[] items) {
+        System.out.println("Matrix is : ");
         for (int i = 0; i < numOfItems; ++i) {
             for (int j = 0; j < numOfItems; ++j) {
                 matrix[i][j] = euclideanDistance(items[i].coord, items[j].coord);
                 matrix[j][i] = matrix[i][j];
+                System.out.print(matrix[i][j]+"\t\t\t\t\t");
             }
+            System.out.println();
         }
     }
 
-    public double[][] generateDistanceMatrix(int numOfItems, final ItemT[] items){
+    public static double[][] generateDistanceMatrix(int numOfItems, final ItemT[] items){
         double[][] matrix = new double[numOfItems][numOfItems];
         if (matrix != null) {
             fillEuclideanDistances(matrix, numOfItems, items);
@@ -43,8 +51,8 @@ public class Agglomerate{
     }
 
     // takes two clusters and returns the min distance between 2 items - one from cluster a and the other from cluster b
-    public double singleLinkage(double[][] distances, final int[] a, final int[] b, int m, int n) {
-        double min = Double.MAX_VALUE; 
+    public static double singleLinkage(double[][] distances, final int[] a, final int[] b, int m, int n) {
+        double min = Double.MAX_VALUE;
         double d = 0.0;
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
@@ -57,7 +65,7 @@ public class Agglomerate{
     }
 
     // takes two clusters and returns the max distance between 2 items - one from cluster a and the other from cluster b
-    public double completeLinkage(double[][] distances, final int[] a, final int[] b, int m, int n){
+    public static double completeLinkage(double[][] distances, final int[] a, final int[] b, int m, int n){
         double d = 0.0;
         double max = 0.0;  /* assuming distances are positive */
         for (int i = 0; i < m; ++i) {
@@ -71,7 +79,7 @@ public class Agglomerate{
     }
 
     // return average distance between 2 clusters
-    public double averageLinkage(double[][] distances, final int[] a, final int[] b, int m, int n) {
+    public static double averageLinkage(double[][] distances, final int[] a, final int[] b, int m, int n) {
         double total = 0.0;
         for (int i = 0; i < m; ++i){
             for (int j = 0; j < n; ++j) {
@@ -81,7 +89,7 @@ public class Agglomerate{
         return total /(m * n);
     }
 
-    public double getDistance(ClusterT cluster, int index, int target) {
+    public static double getDistance(ClusterT cluster, int index, int target) {
         /* if both are leaves, just use the distances matrix */
         if (index < cluster.numOfItems && target < cluster.numOfItems)
             return cluster.distances[index][target];
@@ -104,7 +112,7 @@ public class Agglomerate{
         }
     }
 
-    public void insertBefore(NeighbourT current, NeighbourT neighbours, ClusterNodeT node) {
+    public static void insertBefore(NeighbourT current, NeighbourT neighbours, ClusterNodeT node) {
         neighbours.next = current;
         if (current.prev != null) {
             current.prev.next = neighbours;
@@ -114,12 +122,12 @@ public class Agglomerate{
         current.prev = neighbours;
     }
 
-    public void insertAfter(NeighbourT current, NeighbourT neighbours) {
+    public static void insertAfter(NeighbourT current, NeighbourT neighbours) {
         neighbours.prev = current;
         current.next = neighbours;
     }
 
-    public void insertSorted(ClusterNodeT node, NeighbourT neighbours) {
+    public static void insertSorted(ClusterNodeT node, NeighbourT neighbours) {
         NeighbourT temp = node.neighbours;
         while (temp.next != null) {
             if (temp.distance >= neighbours.distance) {
@@ -134,7 +142,7 @@ public class Agglomerate{
             insertAfter(temp, neighbours);
     }
 
-    public NeighbourT addNeighbour(ClusterT cluster, int index, int target) {
+    public static NeighbourT addNeighbour(ClusterT cluster, int index, int target) {
         NeighbourT neighbour = new NeighbourT();
         neighbour.target = target;
         neighbour.distance = getDistance(cluster, index, target);
@@ -148,7 +156,7 @@ public class Agglomerate{
         return neighbour;
     }
 
-    public ClusterT updateNeighbours(ClusterT cluster, int index) {
+    public static ClusterT updateNeighbours(ClusterT cluster, int index) {
         ClusterNodeT node = cluster.nodes[index];
         if (node.type == AgglomerateConstants.NOT_USED) {
             System.err.println("Invalid cluster node at index "+index);
@@ -173,7 +181,7 @@ public class Agglomerate{
         return cluster;
     }
 
-    public void intialiseLeaf(ClusterT cluster, ClusterNodeT node, final ItemT item){
+    public static void intialiseLeaf(ClusterT cluster, ClusterNodeT node, final ItemT item){
         node.label = new String(item.label);
         node.centroid = item.coord;
         node.type = AgglomerateConstants.LEAF_NODE;
@@ -183,7 +191,7 @@ public class Agglomerate{
         node.items[0] = cluster.numOfNodes++;
     }
 
-    public ClusterNodeT addLeaf(ClusterT cluster, final ItemT item) {
+    public static ClusterNodeT addLeaf(ClusterT cluster, final ItemT item) {
         ClusterNodeT leaf = cluster.nodes[cluster.numOfNodes];
         leaf.items = new int[1];
         if (leaf.items != null) {
@@ -197,7 +205,7 @@ public class Agglomerate{
         return leaf;
     }
 
-    public ClusterT addLeaves(ClusterT cluster, ItemT[] items) {
+    public static ClusterT addLeaves(ClusterT cluster, ItemT[] items) {
         for (int i = 0; i < cluster.numOfItems; ++i) {
             if (addLeaf(cluster, items[i]) != null) {
                 updateNeighbours(cluster, i);
@@ -210,7 +218,7 @@ public class Agglomerate{
         return cluster;
     }
 
-    public void printClusterItems(ClusterT cluster, int index) {
+    public static void printClusterItems(ClusterT cluster, int index) {
         ClusterNodeT node = cluster.nodes[index];
         System.out.print("Items: ");
         if (node.numOfItems > 0) {
@@ -221,7 +229,7 @@ public class Agglomerate{
         System.out.println();
     }
 
-    public void printClusterNode(ClusterT cluster, int index) {
+    public static void printClusterNode(ClusterT cluster, int index) {
         ClusterNodeT node = cluster.nodes[index];
         if (node.label != null)
             System.out.print("\tLeaf: "+ node.label+ "\n\t");
@@ -237,7 +245,7 @@ public class Agglomerate{
         System.out.println();
     }
 
-    public void mergeItems(ClusterT cluster, ClusterNodeT node, ClusterNodeT[] toMerge) {
+    public static void mergeItems(ClusterT cluster, ClusterNodeT node, ClusterNodeT[] toMerge) {
         node.type = AgglomerateConstants.A_MERGER;
         node.isRoot = true;
         node.height = -1;
@@ -274,7 +282,7 @@ public class Agglomerate{
         }
 
 
-    public ClusterNodeT merge(ClusterT cluster, Distance dObj) {
+    public static ClusterNodeT merge(ClusterT cluster, Distance dObj) {
         int newIdx = cluster.numOfNodes;
         ClusterNodeT node = cluster.nodes[newIdx];
         node.merged = new int [2];
@@ -292,7 +300,7 @@ public class Agglomerate{
         return node;
     }
 
-    public void mergeToOne(ClusterT cluster, ClusterNodeT[] toMerge, ClusterNodeT node, int nodeIdx){
+    public static void mergeToOne(ClusterT cluster, ClusterNodeT[] toMerge, ClusterNodeT node, int nodeIdx){
         node.numOfItems = toMerge[0].numOfItems + toMerge[1].numOfItems;
         node.items = new int[node.numOfItems];
         if (node.items != null) {
@@ -306,7 +314,7 @@ public class Agglomerate{
         }
     }
 
-    public void findBestDistanceNeighbour(ClusterNodeT[] nodes, int nodeIdx, NeighbourT neighbour, Distance obj) {
+    public static void findBestDistanceNeighbour(ClusterNodeT[] nodes, int nodeIdx, NeighbourT neighbour, Distance obj) {
         while (neighbour != null) {
             if (nodes[neighbour.target].isRoot != false) {
                 if (obj.first == -1 || neighbour.distance < obj.bestDistance) {
@@ -320,7 +328,7 @@ public class Agglomerate{
         }
     }
 
-    public int findClustersToMerge(ClusterT cluster, Distance dObj) {
+    public static int findClustersToMerge(ClusterT cluster, Distance dObj) {
         double bestDistance = 0.0;
         int rootClustersSeen = 0;
         int j = cluster.numOfNodes;
@@ -336,7 +344,7 @@ public class Agglomerate{
         return dObj.first;
     }
 
-    public ClusterT mergeClusters(ClusterT cluster) {
+    public static ClusterT mergeClusters(ClusterT cluster) {
         Distance dObj = new Distance();
         while (cluster.numOfClusters > 1) {
             if (findClustersToMerge(cluster, dObj) != -1)
@@ -345,7 +353,7 @@ public class Agglomerate{
         return cluster;
     }
 
-    public void initCluster(ClusterT cluster, int numOfItems, ItemT[] items){
+    public static void initCluster(ClusterT cluster, int numOfItems, ItemT[] items){
         cluster.distances = generateDistanceMatrix(numOfItems, items);
         if (cluster.distances == null) {
             cluster = null;
@@ -360,7 +368,7 @@ public class Agglomerate{
             cluster = null;
     }
 
-    public ClusterT agglomerate(int numOfItems, ItemT[] items) {
+    public static ClusterT agglomerate(int numOfItems, ItemT[] items) {
         ClusterT cluster = new ClusterT();
         if (cluster != null) {
             cluster.nodes = new ClusterNodeT[2 * numOfItems - 1];  // Ques : Why 2 * numOfItems-1??? Why twice ??
@@ -380,7 +388,7 @@ public class Agglomerate{
         return cluster;
     }
 
-    public int printRootChildren(ClusterT cluster, int i, int nodesToDiscard) {
+    public static int printRootChildren(ClusterT cluster, int i, int nodesToDiscard) {
         ClusterNodeT node = cluster.nodes[i];
         int rootsFound = 0;
         if (node.type == AgglomerateConstants.A_MERGER) {
@@ -395,7 +403,7 @@ public class Agglomerate{
         return rootsFound;
     }
 
-    public void getKClusters(ClusterT cluster, int k) {
+    public static void getKClusters(ClusterT cluster, int k) {
         if (k < 1)
             return;
         if (k > cluster.numOfItems)
@@ -417,66 +425,71 @@ public class Agglomerate{
         }
     }
 
-    void printCluster(ClusterT cluster) {
+    public static void printCluster(ClusterT cluster) {
         for (int i = 0; i < cluster.numOfNodes; ++i)
             printClusterNode(cluster, i);
     }
 
-    void setLinkage(String linkageType){
+    public static void setLinkage(String linkageType){
         linkageString = linkageType;
     }
 
-    public ItemT[] processInput(ItemT[] items, String fileName) {
+    public static ItemT[] processInput(ItemT[] items, String absoluteFileName) {
         int numOfItems = 0;
-        BufferedReader br = null;
+        Map<String, BitSet> readInput = null;
+        FileInputStream fileInputStream = null;
+        ObjectInputStream ois = null;
         try{
-            br = new BufferedReader(new FileReader(new File(fileName)));
-            numOfItems = Integer.parseInt(br.readLine());
+            fileInputStream = new FileInputStream(absoluteFileName);
+            ois = new ObjectInputStream(fileInputStream);
+            readInput  = (Map<String, BitSet>)ois.readObject();
+            numOfItems = readInput.size();
             items = new ItemT[numOfItems];
-            for (int i = 0; i < numOfItems; ++i) {
-                String[] itemInfo = br.readLine().split(" ");
+            int i =0;
+            for (Map.Entry<String, BitSet> entry : readInput.entrySet()) {
                 ItemT t = new ItemT();
-                t.label = itemInfo[0].replaceAll("[^A-Z]", "");
-                t.coord = Processing.strToBitSet(itemInfo[1].trim());
+                t.label = entry.getKey().trim();
+                t.coord = entry.getValue();
                 items[i]= t;
+                i++;
             }
         }
-        catch(FileNotFoundException fe){
-            fe.printStackTrace();
+        catch(IOException e){
+            e.printStackTrace();
         }
-        catch(IOException ie){
-            ie.printStackTrace();
+        catch(ClassNotFoundException cf){
+            cf.printStackTrace();
+        }
+        finally {
+            try {
+                ois.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return items;
     }
 
     public static void main(String[] args) {
-        /*int argc, char **argv */
-        Agglomerate ag = new Agglomerate();
-        Scanner s = new Scanner(System.in);
-        String[] argv = s.nextLine().split(" ");
-        if (argv.length != 4) {
-            System.err.println("Usage: " + argv[0] + " <input file> <num clusters> <linkage type>");
-            System.exit(1);
-        }
-        else {
-            ItemT[] items = null;
-            String dir = System.getProperty("user.dir");
-            items = ag.processInput(items, dir+"/../data/"+argv[1]);
-            int numOfItems = items.length;
-            ag.setLinkage(argv[3]);
-            if (numOfItems > 0) {
-                ClusterT cluster = ag.agglomerate(numOfItems, items);
-                if (cluster != null) {
-                    System.out.println("CLUSTER HIERARCHY \n--------------------");
-                    ag.printCluster(cluster);
-
-                    int k = Integer.parseInt(argv[2]);
-                    System.out.println(k + " CLUSTERS \n--------------------");
-                    ag.getKClusters(cluster, k);
-                }
+        /* Moved this part of code to Execute.java */
+        /*
+        ItemT[] items = null;
+        String dir = System.getProperty("user.dir")+"/"+ Constants.PACKAGE_PREFIX ;
+        System.out.println("File being read : "+dir+ Constants.BIT_VECTOR_FILE+ Constants.OUTPUT_FORMAT);
+        items = processInput(items, dir+ Constants.BIT_VECTOR_FILE+ Constants.OUTPUT_FORMAT);
+        int numOfItems = items.length;
+        setLinkage("c");
+        if (numOfItems > 0) {
+            ClusterT cluster = agglomerate(numOfItems, items);
+            if (cluster != null) {
+                System.out.println("CLUSTER HIERARCHY \n--------------------");
+                printCluster(cluster);
+                int k = 1;//Integer.parseInt(argv[2]);
+                System.out.println(k + " CLUSTERS \n--------------------");
+                getKClusters(cluster, k);
             }
         }
+        */
     }
 
 }
