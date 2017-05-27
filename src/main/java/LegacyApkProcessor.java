@@ -1,5 +1,9 @@
 package main.java;
 
+/**
+ * Created by Shubham Mittal on 5/17/17.
+ */
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -8,7 +12,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ApkProcessor {
+public class LegacyApkProcessor {
 
     public static void main(String[] args) {
         Instant start = Instant.now();
@@ -17,15 +21,21 @@ public class ApkProcessor {
         File folder = new File(Constants.PACKAGE_PREFIX + Constants.ORIGINAL);
         String cmd = null, destDir;
         try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(Constants.PACKAGE_PREFIX + Constants.APK_NAMES_FILE));    //Write ApkNames to apknames.txt
             int iter=0;
             for (File apkFile : folder.listFiles()) {
-                destDir = Constants.PACKAGE_PREFIX + Constants.APK_EXTRACTED_FOLDER + apkFile.toString().substring(apkFile.toString().lastIndexOf("/")+1, apkFile.toString().lastIndexOf("."));
+                String apkFileName=apkFile.toString().substring(apkFile.toString().lastIndexOf("/")+1, apkFile.toString().lastIndexOf("."));
+                destDir = Constants.PACKAGE_PREFIX + Constants.APK_EXTRACTED_FOLDER + apkFileName;
                 cmd = "java -jar " + Constants.PACKAGE_PREFIX + "apktool_2.2.2.jar d " + apkFile + " -o " + destDir;
                 Process p = Runtime.getRuntime().exec(cmd);
-                // Java -- How to perform batching ?? o.O
+                // Java -- perform batching ??
                 p.waitFor();
+                bw.write(apkFileName);
+                bw.newLine();
                 System.out.println("Finished Processing " + apkFile + ".apk");
             }
+            bw.flush();
+            bw.close();
         } catch (IOException e) {
             System.out.println("Problem while running apktool");e.printStackTrace();
         } catch (InterruptedException e) {
