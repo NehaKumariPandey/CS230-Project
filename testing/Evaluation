@@ -18,7 +18,8 @@ Run Juxtapp and evaluate performance, if Juxtapp can correctly identify the 19 a
 
 [Steps to introduce malware specfied in a different document]
 
-3) A randomly selected APK from the dataset will be repackaged under different APK names. where the opcodes will be the same. But we will we manually change the publisher identifiers in the AndroidManifest.xml
+3) A randomly selected APK from the dataset will be repackaged under different APK names. where the opcodes will be the same. 
+But we will we manually change the publisher identifiers in the AndroidManifest.xml
 -	In our dataset of 100 APKs :
 5 APKS will have the same opcodes, repackaged under a different name
 
