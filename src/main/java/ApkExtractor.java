@@ -24,6 +24,9 @@ public class ApkExtractor {
         List<Future<String>> futures = new LinkedList<>();
 
         for (File apkFile : folder.listFiles()) {
+            if (apkFile.toString().contains(Constants.MAC_STORE)) {
+                continue;
+            }
             Callable callable = new Callable() {
                 @Override
                 public Object call() throws Exception {

@@ -19,11 +19,11 @@ public class ManifestParser {
         List<String> activityList = new ArrayList<String>();
         BufferedReader brManifest = new BufferedReader(new FileReader(pathToApk + Constants.MANIFEST_FILE));
         while ((mline = brManifest.readLine()) != null) {
-            if (mline.trim().startsWith(Constants.ACTIVITY)) {
+            if (mline.trim().startsWith(Constants.ACTIVITY) || mline.trim().startsWith(Constants.RECEIVER)) {
                 //extract the activity name
                 String[] strArr = mline.split("[= ]+");
                 for (int i = 0; i < strArr.length; i++) {
-                    if (strArr[i].contains(Constants.ACTIVITY_NAME)) {
+                    if (strArr[i].contains(Constants.ANDROID_NAME)) {
                         String temp = strArr[i + 1].trim();
                         activityList.add(Constants.SMALI + "." + temp.substring(temp.indexOf("\"")+1, temp.lastIndexOf("\"")));
                         break;
@@ -92,9 +92,15 @@ public class ManifestParser {
 
     private void serialize(String apkName, List<List<String>> listOfLists) throws IOException {
         //Serialize list
+        if (listOfLists == null || listOfLists.isEmpty()) {
+            System.out.println("HALT! Empty opcodeList found for apk:: + " + apkName);
+            return;
+        }
         FileOutputStream fileOutputStream = new FileOutputStream(Constants.PACKAGE_PREFIX + Constants.BB_FOLDER + apkName + Constants.OUTPUT_FORMAT);
         ObjectOutputStream oos = new ObjectOutputStream(fileOutputStream);
         oos.writeObject(listOfLists);
         oos.flush();
+        oos.close();
+        System.out.println("Finished processing apk:" + apkName);
     }
 }
