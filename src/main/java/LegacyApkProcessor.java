@@ -59,7 +59,7 @@ public class LegacyApkProcessor {
                         //extract the activity name
                         String[] strArr = mline.split("[= ]+");
                         for (int i = 0; i < strArr.length; i++) {
-                            if (strArr[i].contains(Constants.ACTIVITY_NAME)) {
+                            if (strArr[i].contains(Constants.ANDROID_NAME)) {
                                 String temp = strArr[i + 1].trim();
                                 activityList.add(Constants.SMALI + "." + temp.substring(temp.indexOf("\"")+1, temp.lastIndexOf("\"")));
                                 break;

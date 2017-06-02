@@ -29,6 +29,9 @@ public class Execute {
         File folder = new File(dir + Constants.PACKAGE_PREFIX + Constants.BB_FOLDER);
         String filePath = dir + Constants.PACKAGE_PREFIX + Constants.BB_FOLDER;
         for (File opCodeFile : folder.listFiles()) {
+            if (opCodeFile.toString().contains(Constants.MAC_STORE)) {
+                continue;
+            }
             //System.out.println("Input to readOpCode : "+filePath+" "+opCodeFile.getName());
             FeatureVectorGenerator.readOpCode(filePath + opCodeFile.getName());
             /* k = 5, m = 30000 */
