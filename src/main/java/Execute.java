@@ -50,8 +50,9 @@ public class Execute {
         items = Agglomerate.processInput(items, dir + Constants.BIT_VECTOR_FILE + Constants.OUTPUT_FORMAT);
         int numOfItems = items.length;
         Agglomerate.setLinkage(linkageInputType);
+        ClusterT cluster = null;
         if (numOfItems > 0) {
-            ClusterT cluster = Agglomerate.agglomerate(numOfItems, items);
+            cluster = Agglomerate.agglomerate(numOfItems, items);
             if (cluster != null) {
                 System.out.println("CLUSTER HIERARCHY \n--------------------");
                 Agglomerate.printCluster(cluster);
@@ -60,6 +61,34 @@ public class Execute {
             }
         }
 
+        System.out.println("Enter APK-Name:- ");
+        String apkname = s.nextLine();
+        BitSet coords = null;
+        boolean APIfound = false;
+        for (ItemT item : items) {
+            if (item.label.contains(apkname)) {
+                coords = item.coord;
+                APIfound = true;
+                break;
+            }
+        }
+        if (APIfound) {
+            ClusterNodeT[] mynodes = Agglomerate.getTopKNodes(cluster, numClusters);
+            if(mynodes==null){
+                System.out.println("Nodes Issue!");
+            }
+            ClusterNodeT node = Agglomerate.getNearestCluster(cluster, mynodes, coords);
+            System.out.println("API most similar to Cluster with "+node.numOfItems+" items.");
+            if (node.numOfItems > 0) {
+                System.out.print(cluster.nodes[node.items[0]].label +" ");
+                for (int i = 1; i < node.numOfItems; ++i)
+                    System.out.print(", "+cluster.nodes[node.items[i]].label);
+            }
+            System.out.println();
+			
+            ClusterNodeT itemNode = Agglomerate.getNearestItem(cluster, mynodes, coords);
+            System.out.println("Most similar item = "+ itemNode.label);
+        }
     }
 
 }
