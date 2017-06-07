@@ -3,29 +3,40 @@ package main.java;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import static main.java.Utils.*;
 
 /**
  * Created by Shubham Mittal on 5/27/17.
  */
 public class ManifestParser {
-    public void parseManifest(final String apkName) throws Exception {
-        String pathToApk = Constants.PACKAGE_PREFIX + Constants.APK_EXTRACTED_FOLDER + apkName + "/", mline;
+    public void parseManifest(final String apkName, final String sampledData) throws Exception {
+        String pathToApk = Constants.PACKAGE_PREFIX + Constants.APK_EXTRACTED_FOLDER + sampledData + apkName + "/", mline, trimLine;
 
-        //Read Manifest and extract activity list
+        //Read Manifest and extract activity list & permission list
         List<String> activityList = new ArrayList<String>();
+        Set<String> permissionSet = new HashSet<String>();
         BufferedReader brManifest = new BufferedReader(new FileReader(pathToApk + Constants.MANIFEST_FILE));
         while ((mline = brManifest.readLine()) != null) {
-            if (mline.trim().startsWith(Constants.ACTIVITY) || mline.trim().startsWith(Constants.RECEIVER)) {
+            trimLine = mline.trim();
+            if (trimLine.startsWith(Constants.ACTIVITY) || trimLine.startsWith(Constants.RECEIVER)) {
                 //extract the activity name
                 String[] strArr = mline.split("[= ]+");
                 for (int i = 0; i < strArr.length; i++) {
                     if (strArr[i].contains(Constants.ANDROID_NAME)) {
                         String temp = strArr[i + 1].trim();
                         activityList.add(Constants.SMALI + "." + temp.substring(temp.indexOf("\"")+1, temp.lastIndexOf("\"")));
+                        break;
+                    }
+                }
+            } else if (trimLine.startsWith(Constants.USES_PERMISSION)) {
+                String[] strArr = mline.split("[= ]+");
+                for (int i = 0; i < strArr.length; i++) {
+                    if (strArr[i].contains(Constants.ANDROID_NAME)) {
+                        String temp = strArr[i + 1].trim();
+                        String permission = temp.substring(temp.lastIndexOf(".")+1, temp.lastIndexOf("\""));
+                        permissionSet.add(permission);
                         break;
                     }
                 }
@@ -87,20 +98,41 @@ public class ManifestParser {
             System.out.println("\nCheck 3 -- Activity Processing Time: " + Duration.between(check2, check3));
             System.out.println("Check 3 -- Cumulative Time: " + Duration.between(start, check3));*/
 
-            serialize(apkName, listOfLists);
-        }
-
-    private void serialize(String apkName, List<List<String>> listOfLists) throws IOException {
-        //Serialize list
         if (listOfLists == null || listOfLists.isEmpty()) {
             System.out.println("HALT! Empty opcodeList found for apk:: + " + apkName);
             return;
+        } else {
+            Utils.serialize(listOfLists, Constants.PACKAGE_PREFIX + Constants.BB_FOLDER + apkName + Constants.OUTPUT_FORMAT);
+            System.out.println("Finished processing apk:" + apkName);
         }
-        FileOutputStream fileOutputStream = new FileOutputStream(Constants.PACKAGE_PREFIX + Constants.BB_FOLDER + apkName + Constants.OUTPUT_FORMAT);
-        ObjectOutputStream oos = new ObjectOutputStream(fileOutputStream);
-        oos.writeObject(listOfLists);
-        oos.flush();
-        oos.close();
-        System.out.println("Finished processing apk:" + apkName);
+
+
+        if (!permissionSet.isEmpty()) {
+            for (String permission : permissionSet) {
+                // Increment the global permission value
+                if (globalPermMap.containsKey(permission)) {
+                    globalPermMap.put(permission, globalPermMap.get(permission)+1);
+                }
+            }
+            if (sampledData.equals(Constants.ORIGINAL)) {
+                benignCount++;}
+            else {malwareCount++;}
+            int[] bitVector = createFeatureVec(permissionSet);
+            globalFeatureMatrix.add(bitVector);
+            // Write individual feature vectors
+            Utils.serialize(bitVector, Constants.PACKAGE_PREFIX + Constants.PERMISSIONS_FOLDER + sampledData + apkName + Constants.PERMISSION_OUT);
+        } else {
+            System.out.println("No Permissions extracted for Apk:" + apkName);
+        }
+    }
+
+    private int[] createFeatureVec(Set<String> permissionSet) {
+        int[] bitVector = new int[globalPermMap.size()];
+        for (String key : permissionSet) {
+            if (permIndexMap.containsKey(key)) {
+                bitVector[permIndexMap.get(key)] = 1;
+            }
+        }
+        return bitVector;
     }
 }
