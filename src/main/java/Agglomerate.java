@@ -470,6 +470,88 @@ public class Agglomerate{
         return items;
     }
 
+    public static ClusterNodeT[] getTopKNodes(ClusterT cluster, int k){
+        if (k < 1)
+            return null;
+        if (k > cluster.numOfItems)
+            k = cluster.numOfItems;
+			
+        ClusterNodeT[] nodes = new ClusterNodeT[k];
+        int i = cluster.numOfNodes - 1;
+        int rootsFound = 0;
+        int nodesToDiscard = cluster.numOfNodes - k + 1;
+		
+        while (k > 0) {
+            if (i < nodesToDiscard) {
+                printClusterItems(cluster, i);
+                nodes[rootsFound++] = cluster.nodes[i];
+            }
+            else {
+			
+                ClusterNodeT node = cluster.nodes[i];
+				
+                if (node.type == AgglomerateConstants.A_MERGER) {
+                    for (int j = 0; j < 2; ++j) {
+                        int t = node.merged[j];
+                        if (t < nodesToDiscard) {
+                            nodes[rootsFound++] = cluster.nodes[t];
+                        }
+                    }
+                }
+				
+            }
+            k -= rootsFound;
+            --i;
+        }
+        return nodes;
+    }
+	
+    public static ClusterNodeT getNearestCluster(ClusterT cluster, ClusterNodeT[] topClusters, BitSet bitVector){
+	
+        ClusterNodeT similarNode = new ClusterNodeT();
+        double distance = Double.MAX_VALUE;
+		
+        for(ClusterNodeT node : topClusters){
+            double d = euclideanDistance(bitVector, node.centroid);
+			
+            if(distance > d){
+                distance = d;
+                similarNode = node;
+            }
+        }
+		
+        return similarNode;
+    }
+	
+    public static ClusterNodeT getNearestItem(ClusterT cluster, ClusterNodeT[] topClusters, BitSet bitVector){
+        ClusterNodeT startNode = getNearestCluster(cluster,topClusters,bitVector);
+        return similarNodeTraversal(cluster,startNode,bitVector);
+    }
+	
+    public static ClusterNodeT similarNodeTraversal(ClusterT cluster, ClusterNodeT simNode, BitSet bitVector){
+	
+        ClusterNodeT similarNode = null;
+        double distance = Double.MAX_VALUE;
+        if(simNode.type == AgglomerateConstants.LEAF_NODE){
+            return simNode;
+        }
+        else{
+            if(simNode == null){
+                System.out.println("Error!! Node uninitialized");
+            }
+            else{
+                for(int i=0; i<simNode.merged.length; i++){
+                    double d = euclideanDistance(bitVector, cluster.nodes[simNode.merged[i]].centroid);
+                    if(distance>d){
+                        distance = d;
+                        similarNode = cluster.nodes[simNode.merged[i]];
+                    }
+                }
+            }
+            return similarNodeTraversal(cluster, similarNode, bitVector);
+        }
+    }
+	
     public static void main(String[] args) {
         /* Moved this part of code to Execute.java */
         /*
