@@ -1,4 +1,8 @@
-1. Create 3 empty folders with names : extracted, BBFile, FVFile in main/resources
+1. Create 3 empty folders with names : 
+extracted(malware,original), 
+BBFile, 
+FVFile, 
+permissions (malware,original) in main/resources
 2. Run ApkProcessor.java to extract apk file and generate opcode files
 3. Run Execute.java to generate feature vector and clustering
     1. Enter value for k - Enter 5
