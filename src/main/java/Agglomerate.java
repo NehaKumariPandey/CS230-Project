@@ -33,7 +33,7 @@ public class Agglomerate{
             for (int j = 0; j < numOfItems; ++j) {
                 matrix[i][j] = euclideanDistance(items[i].coord, items[j].coord);
                 matrix[j][i] = matrix[i][j];
-                System.out.print(matrix[i][j]+"\t\t\t\t\t");
+                System.out.print(matrix[i][j]+"\t");
             }
             System.out.println();
         }
@@ -222,9 +222,9 @@ public class Agglomerate{
         ClusterNodeT node = cluster.nodes[index];
         System.out.print("Items: ");
         if (node.numOfItems > 0) {
-            System.out.print(cluster.nodes[node.items[0]].label +" ");
-            for (int i = 1; i < node.numOfItems; ++i)
-                System.out.print(", "+cluster.nodes[node.items[i]].label);
+            //System.out.print(cluster.nodes[node.items[0]].label +" ");
+            for (int i = 0; i < node.numOfItems; ++i)
+                System.out.print(cluster.nodes[node.items[i]].label + "\n");
         }
         System.out.println();
     }
