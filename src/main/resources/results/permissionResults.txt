@@ -1,0 +1,29 @@
+Results
+======
+
+Correctly Classified Instances         132               89.1892 %
+Incorrectly Classified Instances        16               10.8108 %
+Kappa statistic                          0.7448
+K&B Relative Info Score              10529.7227 %
+K&B Information Score                   95.2289 bits      0.6434 bits/instance
+Class complexity | order 0             133.457  bits      0.9017 bits/instance
+Class complexity | scheme              236.355  bits      1.597  bits/instance
+Complexity improvement     (Sf)       -102.898  bits     -0.6953 bits/instance
+Mean absolute error                      0.1175
+Root mean squared error                  0.3275
+Relative absolute error                 27.0555 %
+Root relative squared error             70.349  %
+Total Number of Instances              148     
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.941    0.213    0.905      0.941    0.922      0.746    0.924     0.950      benign
+                 0.787    0.059    0.860      0.787    0.822      0.746    0.924     0.894      malware
+Weighted Avg.    0.892    0.164    0.891      0.892    0.891      0.746    0.924     0.933     
+
+=== Confusion Matrix ===
+
+  a  b   <-- classified as
+ 95  6 |  a =  benign
+ 10 37 |  b =  malware

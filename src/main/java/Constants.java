@@ -13,6 +13,7 @@ public final class Constants {
     public static final String ANDROID_NAME = "android:name";
     public static final String APK_EXTRACTED_FOLDER = "extracted/"; /* Folder to store extracted apk's */
     public static final String APK_NAMES_FILE = "apknames.txt";
+    public static final String ARFF_FORMAT = ".arff";
     public static final String BB_FOLDER = "BBFile/";   /* Folder containing BB File */
     public static final String BENIGN_LABEL = "benign";
     public static final String BIT_VECTOR_FILE = "bitVectors";
@@ -20,6 +21,7 @@ public final class Constants {
     public static final String CONST_STRING = "const-string";
     public static final String CSV = ".csv";
     public static final String END_METHOD = ".end method";
+    public static final String FEATURE_FOLDER = "features/";
     public static final String FEATURE_MATRIX = "feature_mat";
     public static final String FILE_HEADER = ".class";
     public static final String FV_FOLDER = "FVFile/";     /* Folder to store serialized information of feature vectors */
@@ -36,9 +38,13 @@ public final class Constants {
     public static final String PERMISSIONS_FILE = "PermissionList";
     public static final String PERMISSIONS_FOLDER = "permissions/";
     public static final String PERMISSION_OUT = ".perm";
+    public static final String PERMISSION_RESULT_FILE = "permissionResults.txt";
     public static final String RECEIVER = "<receiver";
+    public static final String RESULTS = "results/";
     public static final String SMALI = "smali";
+    public static final String TOP_FEATURES = "top_features";
     public static final String TEST_APK_DIR = "testApk/";
+    public static final String TRIMMED_FEATURE_MATRIX = "trimmed_feature_mat";
     public static final String USES_PERMISSION = "<uses-permission";     /* Mac Store File */
 }
 

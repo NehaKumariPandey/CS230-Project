@@ -1,5 +1,10 @@
 package main.java;
 
+import weka.core.Attribute;
+import weka.core.Instances;
+import weka.core.converters.ArffSaver;
+import weka.core.converters.CSVLoader;
+
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,7 +64,7 @@ public class Utils {
         loadPermissionIndexMap(permIndexMap);
     }
 
-    public static void serialize(Object object, String outputPath) throws IOException {
+    protected static void serialize(Object object, String outputPath) throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream(outputPath);
         ObjectOutputStream oos = new ObjectOutputStream(fileOutputStream);
         oos.writeObject(object);
@@ -67,7 +72,7 @@ public class Utils {
         oos.close();
     }
 
-    public static Map deSerialize(String inputPath) throws Exception {
+    protected static Map deSerialize(String inputPath) throws Exception {
         FileInputStream fileInputStream = new FileInputStream(inputPath);
         ObjectInputStream ois = new ObjectInputStream(fileInputStream);
         globalPermMap = (Map<String, Integer>) ois.readObject();
@@ -80,5 +85,33 @@ public class Utils {
         for (String key : globalPermMap.keySet()) {
             permIndexMap.put(key, iter++);
         }
+    }
+
+    protected static void covertCSV2Arff(String inputPath, String outputPath) throws IOException {
+        CSVLoader csv = new CSVLoader();
+        csv.setSource(new File(inputPath));
+        Instances instances = csv.getDataSet();
+        writeInstanceToFile(instances, outputPath);
+    }
+
+    protected static void writeInstanceToFile(Instances instances, String outputPath) throws IOException {
+        ArffSaver arffSaver = new ArffSaver();
+        arffSaver.setInstances(instances);
+        arffSaver.setFile(new File(outputPath));
+        arffSaver.writeBatch();
+    }
+
+    protected static void writeMap2CSV(Map<Attribute, Double> hashMap, String outputPath) throws IOException {
+        FileWriter writer = new FileWriter(outputPath);
+        StringBuilder sb = new StringBuilder();
+        for (Attribute attribute: hashMap.keySet()) {
+            sb.append(attribute.toString());
+            sb.append(Constants.COMMA_DELIMITER);
+            sb.append(hashMap.get(attribute));
+            sb.append(Constants.NEWLINE_CHARACTER);
+        }
+        writer.append(sb.toString());
+        writer.flush();
+        writer.close();
     }
 }

@@ -1,5 +1,9 @@
 package main.java;
 
+import weka.core.Instances;
+import weka.core.converters.ArffSaver;
+import weka.core.converters.CSVLoader;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -70,9 +74,9 @@ public class ApkExtractor {
             }
         }
         try {
-            Utils.serialize(globalPermMap, Constants.PACKAGE_PREFIX + Constants.PERMISSIONS_FILE + Constants.PERMISSION_OUT);
-            Utils.serialize(globalFeatureMatrix, Constants.PACKAGE_PREFIX + Constants.FEATURE_MATRIX + Constants.OUTPUT_FORMAT);
-            FileWriter writer = new FileWriter(Constants.PACKAGE_PREFIX + Constants.FEATURE_MATRIX + Constants.CSV);
+            Utils.serialize(globalPermMap, Constants.PACKAGE_PREFIX + Constants.FEATURE_FOLDER + Constants.PERMISSIONS_FILE + Constants.PERMISSION_OUT);
+            Utils.serialize(globalFeatureMatrix, Constants.PACKAGE_PREFIX + Constants.FEATURE_FOLDER + Constants.FEATURE_MATRIX + Constants.OUTPUT_FORMAT);
+            FileWriter writer = new FileWriter(Constants.PACKAGE_PREFIX + Constants.FEATURE_FOLDER + Constants.FEATURE_MATRIX + Constants.CSV);
             StringBuilder sb = new StringBuilder();
             sb.append(Utils.header);
             sb.append(Constants.LABELS);
@@ -89,6 +93,7 @@ public class ApkExtractor {
             writer.append(sb.toString());
             writer.flush();
             writer.close();
+            Utils.covertCSV2Arff(Constants.PACKAGE_PREFIX + Constants.FEATURE_FOLDER + Constants.FEATURE_MATRIX + Constants.CSV, Constants.PACKAGE_PREFIX + Constants.FEATURE_FOLDER + Constants.FEATURE_MATRIX + Constants.ARFF_FORMAT);
         } catch (Exception e) {
             System.out.println("Unable to write global permission map or feature matrix !!");
             e.printStackTrace();
