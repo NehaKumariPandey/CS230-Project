@@ -30,10 +30,15 @@ public class Agglomerate{
     public static void fillEuclideanDistances(double[][] matrix, int numOfItems, ItemT[] items) {
         System.out.println("Matrix is : ");
         for (int i = 0; i < numOfItems; ++i) {
+            System.out.print(items[i].label+"\t\t\t\t\t");
+        }
+        System.out.println();
+
+        for (int i = 0; i < numOfItems; ++i) {
             for (int j = 0; j < numOfItems; ++j) {
                 matrix[i][j] = euclideanDistance(items[i].coord, items[j].coord);
                 matrix[j][i] = matrix[i][j];
-                System.out.print(matrix[i][j]+"\t");
+                System.out.print(matrix[i][j]+"\t\t\t");
             }
             System.out.println();
         }

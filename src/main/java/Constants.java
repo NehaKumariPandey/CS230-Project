@@ -45,6 +45,8 @@ public final class Constants {
     public static final String TOP_FEATURES = "top_features";
     public static final String TEST_APK_DIR = "testApk/";
     public static final String TRIMMED_FEATURE_MATRIX = "trimmed_feature_mat";
+    public static final String TRACE_BACK_FILE = "traceback";     /* Trace back file */
+    public static final String TRACE_FILE_OUTPUT_FORMAT = ".txt";     /* Trace back file extension */
     public static final String USES_PERMISSION = "<uses-permission";     /* Mac Store File */
 }
 

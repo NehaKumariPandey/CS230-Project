@@ -111,16 +111,65 @@ public class FeatureVectorGenerator {
 
     }
 
+    /* Deserialize Feature Vector : Useful for tracing back to the files */
+    public static Map<Long, List<FeatureVectorNode>> deserializeFeatureVector(String fileName){
+        String dir = getCurrentDirectory();
+        FileInputStream fileInputStream = null;
+        ObjectInputStream ois = null;
+        Map<Long, List<FeatureVectorNode>> featureVector = null;
+        try{
+            fileInputStream = new FileInputStream(dir+ Constants.PACKAGE_PREFIX + Constants.FV_FOLDER + fileName); //fileName contains .out
+            ois = new ObjectInputStream(fileInputStream);
+            featureVector = (Map<Long, List<FeatureVectorNode>>)ois.readObject();
+        }
+        catch(IOException ie){
+            ie.printStackTrace();
+        }
+        catch(ClassNotFoundException ce){
+            ce.printStackTrace();
+        }
+        return featureVector;
+    }
+
+    /* Deserialize Feature Bit Vector : Required for input to Clustering and Similarity Analysis */
+    public static Map<String, BitSet> deserializeBitVector(){
+        String dir = getCurrentDirectory();
+        FileInputStream fileInputStream = null;
+        ObjectInputStream ois = null;
+        Map<String, BitSet> bitVectors = null;
+        try{
+            fileInputStream = new FileInputStream(dir+ Constants.PACKAGE_PREFIX  + Constants.BIT_VECTOR_FILE + Constants.OUTPUT_FORMAT);
+            ois = new ObjectInputStream(fileInputStream);
+            bitVectors = (Map<String, BitSet>)ois.readObject();
+        }
+        catch(IOException ie){
+            ie.printStackTrace();
+        }
+        catch(ClassNotFoundException ce){
+            ce.printStackTrace();
+        }
+        finally{
+            try{
+                ois.close();
+            }
+            catch(IOException ie){
+                ie.printStackTrace();
+            }
+        }
+        return bitVectors;
+    }
+
     public static String getCurrentDirectory(){
         return System.getProperty("user.dir") +"/";
     }
 
     /* Using Feature Vector Object, it generates BitSet object for each apk for input to similarity and clustering code */
-    public static void generateBitVector(Map<Long, List<FeatureVectorNode>> featureVector, Map<String, BitSet> bitVectors, String fileName){
+    public static BitSet generateBitVector(Map<Long, List<FeatureVectorNode>> featureVector){
         BitSet bitVector = new BitSet();
         for(long v: featureVector.keySet())
             bitVector.set((int)v);
-        bitVectors.put(fileName, bitVector);
+        return bitVector;
+        //bitVectors.put(fileName, bitVector);
     }
 
     public static void main(String[] args){

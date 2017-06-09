@@ -40,8 +40,9 @@ public class Execute {
                 //System.out.println("Input to readOpCode : "+filePath+" "+opCodeFile.getName());
                 FeatureVectorGenerator.readOpCode(filePath + opCodeFile.getName());
             /* k = 5, m = 30000 */
-                Map<Long, List<FeatureVectorNode>> featureVector = FeatureVectorGenerator.processOpCode(k, m);
-                FeatureVectorGenerator.generateBitVector(featureVector, bitVectors, opCodeFile.getName());
+            Map<Long, List<FeatureVectorNode>> featureVector = FeatureVectorGenerator.processOpCode(k, m);
+            BitSet bitVec = FeatureVectorGenerator.generateBitVector(featureVector);
+            bitVectors.put(opCodeFile.getName(), bitVec);
                 FeatureVectorGenerator.serializeFeatureVector(featureVector, opCodeFile.getName());
                 featureVector = null;
             }
