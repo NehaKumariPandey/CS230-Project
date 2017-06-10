@@ -15,8 +15,7 @@ public class Execute {
 
     public static void main(String[] args) {
         try {
-            PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
-            System.setOut(out);
+
             Scanner s = new Scanner(System.in);
             System.out.println("Enter k(k-Grams) : Example :- 5");
             int k = Integer.parseInt(s.nextLine());
@@ -34,6 +33,7 @@ public class Execute {
             File folder = new File(dir + Constants.PACKAGE_PREFIX + Constants.BB_FOLDER);
             String filePath = dir + Constants.PACKAGE_PREFIX + Constants.BB_FOLDER;
             for (File opCodeFile : folder.listFiles()) {
+                System.out.print(opCodeFile.getName()+"\n");
                 if (opCodeFile.toString().contains(Constants.MAC_STORE)) {
                     continue;
                 }
@@ -62,9 +62,13 @@ public class Execute {
                 if (cluster != null) {
                     System.out.println("CLUSTER HIERARCHY \n--------------------");
                     Agglomerate.printCluster(cluster);
+                    PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
+                    System.setOut(out);
                     System.out.println(numClusters + " CLUSTERS \n--------------------");
                     Agglomerate.getKClusters(cluster, numClusters);
+                    System.setOut(System.out);
                 }
+
             }
 
             System.out.println("Enter APK-Name:- ");
