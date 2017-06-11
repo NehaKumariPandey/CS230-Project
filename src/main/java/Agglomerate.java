@@ -12,6 +12,7 @@ public class Agglomerate{
     private static String linkageString;
 
     public static double euclideanDistance(BitSet a, BitSet b){
+        /* This method evaluates jaccard distance between given two bit vectors */
         BitSet x = (BitSet)a.clone();
         BitSet y = (BitSet)a.clone();
 
