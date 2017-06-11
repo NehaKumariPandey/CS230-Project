@@ -32,34 +32,34 @@ src/main/resources
 ```
 2. Run ApkProcessor.java to extract apk file and generate opcode files
 3. Run Execute.java to generate feature vector and perform clustering
-  1. Enter value for k - Enter 5
-  2. Enter value for m - Enter 240007
-  3. Enter Number of clusters - Enter 1
-  4. Enter Linkage type - Enter s
+    1. Enter value for k - Enter 5
+    2. Enter value for m - Enter 240007
+    3. Enter Number of clusters - Enter 1
+    4. Enter Linkage type - Enter s
 4. To traceback to verify similarity observed for any two applications, Traceback.java can be run 
 
 ### About the datasets
 We perform our evaluation on two different datasets. 
+```
 Dataset Name  | Total number of applications
 ------------- | ----------------------
 Maldroid      | 107
 Droidkin      | 407
+```
 
 * Maldroid
 For evaluating how effectively Juxtapp can detect Android apps with malware, we construct our validation dataset called Maldroid. 107 android applications were selected from the Google PlayStore, out of which 30 were manually repackaged after malware injection to provide a ‘ground truth’ data for our experimentation purposes. The two seeds of the malware are retained and are part of this dataset.
 
 It can be retrieved from the following link:
-```
 [Maldroid dataset](https://github.com/twinklegupta/CS230-Project/tree/master/testing/malware%20with%20some%20original)
-```
+
 
 * Droidkin
 For evaluating how effectively Juxtapp can detect Android apps with piracy, we have used Droidkin dataset. *Pending*
 
 It can be retrieved from the following link:
-```
-http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html
-```
+[Maldroid dataset](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html)
+
 
 ### Methodology 
 
