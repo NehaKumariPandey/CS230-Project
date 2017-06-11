@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class Agglomerate{
     private static String linkageString;
+    private static final int bitvectorsize = 240007;
 
     public static double euclideanDistance(BitSet a, BitSet b){
         /* This method evaluates jaccard distance between given two bit vectors */
@@ -259,8 +260,8 @@ public class Agglomerate{
 
         /* copy leaf indexes from merged clusters */
         int k = 0, idx;
-        BitSet centroid = Processing.strToBitSet("00000000");
-        for (int i = 0; i < 2; ++i) {
+        BitSet centroid = new BitSet(bitvectorsize);
+        for (int i = 0; i < toMerge.length; ++i) {
             ClusterNodeT t = toMerge[i];
             t.isRoot = false;
             /* no longer root: merged */
@@ -272,13 +273,14 @@ public class Agglomerate{
                 }
             cent.add(t.centroid);
         }
-        for(int i = 0; i < 8; i++) {
+        for(int i = 0; i < bitvectorsize; i++) {
             int count = 0;
             for(int j = 0; j < cent.size(); j++) {
                 if(cent.get(j).get(i))
                     count++;
             }
-            if(count > 4)
+
+            if(count >= cent.size()/2)
                 centroid.set(i);
         }
 
@@ -484,13 +486,15 @@ public class Agglomerate{
 			
         ClusterNodeT[] nodes = new ClusterNodeT[k];
         int i = cluster.numOfNodes - 1;
-        int rootsFound = 0;
         int nodesToDiscard = cluster.numOfNodes - k + 1;
+		int pos=0;
 		
         while (k > 0) {
+	    int rootsFound = 0;
             if (i < nodesToDiscard) {
                 printClusterItems(cluster, i);
-                nodes[rootsFound++] = cluster.nodes[i];
+                nodes[pos++] = cluster.nodes[i];
+                rootsFound++;
             }
             else {
 			
@@ -500,7 +504,8 @@ public class Agglomerate{
                     for (int j = 0; j < 2; ++j) {
                         int t = node.merged[j];
                         if (t < nodesToDiscard) {
-                            nodes[rootsFound++] = cluster.nodes[t];
+                            nodes[pos++] = cluster.nodes[t];
+                            rootsFound++;
                         }
                     }
                 }
