@@ -31,8 +31,10 @@ src/main/resources
 │   └───malware
 │       
 └───FVFile
+│       
+└───malware
 ```
-2. Run ApkProcessor.java to extract apk file and generate opcode files
+2. Run ApkExtractor.java to extract apk files kept under src/main/resources/original and generate "serialized" opcode files
 3. Run Execute.java to generate feature vector and perform clustering
     1. Enter value for k - Enter 5
     2. Enter value for m - Enter 240007
@@ -44,7 +46,7 @@ src/main/resources
 We perform our evaluation on two different datasets. 
 ```
 Dataset Name  | Total number of applications
-------------- | ----------------------
+------------- | ----------------------------
 Maldroid      | 107
 Droidkin      | 407
 ```
@@ -54,7 +56,7 @@ Droidkin      | 407
 For evaluating how effectively Juxtapp can detect Android apps with malware, we construct our validation dataset called Maldroid. 107 android applications were selected from the Google PlayStore, out of which 30 were manually repackaged after malware injection to provide a ‘ground truth’ data for our experimentation purposes. The two seeds of the malware were retained as well and are part of this dataset.
 </p>
 
-&nbsp;&nbsp;&nbsp;&nbsp;It can be retrieved from the following link:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;It can be retrieved from the following link:
 [Maldroid dataset](https://github.com/twinklegupta/CS230-Project/tree/master/testing/malware%20with%20some%20original)
 
 * **Droidkin**
@@ -62,8 +64,8 @@ For evaluating how effectively Juxtapp can detect Android apps with malware, we 
 For evaluating how effectively Juxtapp can detect Android apps with piracy, we have used Droidkin dataset. Their original dataset consists of 72 unique Android apps from different sources. To investigate the impact of obfuscation on similarity detection, this set of unique apps underwent the following transformations: Repackaging, Re-repackaging, String url modifications, Junk code insertion, File alignment to 4 and 8 bytes, Icon change, Junk files addition. The final set of 792 samples included original 72 apps, their altered versions transformed using the methods mentioned above and their combinations. For our evaluation, we use a subset of DroidKin which consists of 37 original apps and their transformed versions. A total of 407 Android apps were used by us.
 </p>
 
-&nbsp;&nbsp;&nbsp;&nbsp;It can be retrieved from the following link:
-[Droidkin dataset](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;It can be retrieved from the following link:
+[Droidkin dataset](http://www.unb.ca/cic/research/datasets/android-validation.html)
 
 
 ### Methodology 
@@ -80,13 +82,27 @@ In this project, after obtaining the code-based features(opcodes), we use k-gram
 
 **Similarity Computation**
 <p align="justify">
-To compute the similarity between two applications, we compute the similarity between their bit vectors. We use Jaccard similarity for every pair of applications and we use union and intersection bit vectors operations to compute it. The Jaccard distance(1-Jaccard similarity)gives a measure of ditance between the applications in feature space and is used in clustering.
+To compute the similarity between two applications, we compute the similarity between their bit vectors. We use Jaccard similarity(J(A,B)) for every pair of applications and we use union and intersection bit vectors operations to compute it. The Jaccard distance(opposite of Jaccard similarity i.e. 1 - J(A,B)) gives a measure of distance between the applications in feature space and is used in clustering.
 </p>
 
 **Clustering**
 <p align="justify">
 To club similar applications into same cluster, we use agglomerative hierarchical clustering on the bit vector obtained post feature hashing. The Jaccard distance(opposite of Jaccard similarity) is used as a measure to decide closeness between applications.
 </p>
+
+**Permission-based Malware Classification**
+<p align="justify">
+To address some of the limitations of JuxtApp in context of Malware detection, we use our efficient ApkExtractor to extract permissions from the Manifest file. We create a 150 length bit vector for each application and apply feature selection using Information Gain principle to extract the most influential features (permissions). We apply a 10-fold stratified cross validation technique and test the model using a Naive Bayes classifier.
+</p>
+Steps to run:
+
+1. Ensure you have the same project directory structure as described above.
+2. Run ApkExtractor.java to extract the APK files present in original and malware folders and create corresponding BB files.
+3. Run Execute.java to apply clustering and evaluating JuxtApp
+4. To perform feature based classification, ensure that you have the benign application in the original folder and malicious      applications in the malware folder. 
+    1. Run InformationGain.java for feature selection
+    2. Run PermissionModelClassifier.java for evaluating the model
+5. To invoke the web service, run mvn spring-boot:run from the repository root
 
 
 ## Authors
