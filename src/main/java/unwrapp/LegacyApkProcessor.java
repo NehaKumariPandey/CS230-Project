@@ -1,8 +1,5 @@
 package unwrapp;
 
-/**
- * Created by Shubham Mittal on 5/17/17.
- */
 
 import java.io.*;
 import java.nio.file.Files;
