@@ -12,9 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-/**
- * Created by Shubham Mittal on 5/26/17.
- */
+
 
 public class ApkExtractor {
 
