@@ -1,9 +1,5 @@
 package unwrapp;
 
-/**
- * Created by Shubham Mittal on 5/17/17.
- * @edited : swati.arora
- */
 
 // List of constants used
 public final class Constants {
