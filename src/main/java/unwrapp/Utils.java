@@ -9,9 +9,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Created by Shubham Mittal on 6/6/17.
- */
+
 public class Utils {
 
     static Map<String, Integer> globalPermMap;  // Map of permission mapping to the number of times they appeared over the course
