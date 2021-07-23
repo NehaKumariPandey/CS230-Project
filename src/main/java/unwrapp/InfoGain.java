@@ -15,10 +15,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * Created by Shubham Mittal on 6/6/17.
- * Computes the Information Gain on the input feature matrix
- */
 public class InfoGain {
 
     public static void main(String[] args) throws Exception {
