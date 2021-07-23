@@ -5,9 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-/**
- * Created by Shubham Mittal on 5/27/17.
- */
+
 public class ManifestParser {
     public void parseManifest(final String apkName, final String sampledData) throws Exception {
         String pathToApk = Constants.PACKAGE_PREFIX + Constants.APK_EXTRACTED_FOLDER + sampledData + apkName + "/", mline, trimLine;
